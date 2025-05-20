@@ -2549,7 +2549,7 @@ GameObject:
   - component: {fileID: 1683391205}
   - component: {fileID: 1683391204}
   m_Layer: 5
-  m_Name: SelectLevelText
+  m_Name: SettingsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2958,7 +2958,7 @@ GameObject:
   - component: {fileID: 2130403138}
   m_Layer: 0
   m_Name: BgMusic
-  m_TagString: Audio
+  m_TagString: AudioBg
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

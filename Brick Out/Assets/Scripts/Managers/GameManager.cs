@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
 
         // Сохраняем данные и показываем UI
         ScoreManager.Instance.CompleteLevel(_currentLevel);
-        UIManager.Instance.ShowLevelComplete(_currentLevelScore, ScoreManager.Instance.CurrentScore);
+        UIManager.Instance.ShowLevelComplete(_currentLevelScore, ScoreManager.Instance.TotalScore);
     }
 
     public void StartNextLevel()

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
@@ -10,10 +10,24 @@ public class ScoreManager : MonoBehaviour
     private PlayerData _playerData;
     private int _currentLevelScore;
     private int _levelScore;
-
-    public int CurrentScore => _playerData.TotalScore;
+    private int _totalScore;
     public int LevelScore => _playerData.CurrentLevel;
+    public int TotalScore => _totalScore;
 
+    public void CurrentScore()
+    {
+        StartCoroutine(ApiService.Instance.GetUserScore((coins, error) =>
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogError($"{error}");
+                return;
+            }
+            _totalScore = coins;
+            Debug.Log(_totalScore);
+        }));
+
+    }
     private void Awake()
     {
         if (Instance == null)
@@ -26,33 +40,44 @@ public class ScoreManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    private void Start()
+    {
+        CurrentScore();
+    }
 
     public void AddScore(int amount)
     {
+        StartCoroutine(ApiService.Instance.AddCoins(amount , (coins, error) =>
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogError($"{error}");
+                return;
+            }
+            _totalScore = coins;
+            OnScoreChanged?.Invoke(_totalScore);
+        }));
         _levelScore += amount;
         _currentLevelScore += amount;
-        _playerData.AddScore(amount);
-        OnScoreChanged?.Invoke(_playerData.TotalScore);
         OnLevelScoreChanged?.Invoke(_levelScore);
-        Debug.Log($"Score added: {amount}. Total: {_playerData.TotalScore}");
     }
 
     private void LoadPlayerData()
     {
-        _playerData = PlayerData.LoadData();
+        _playerData = PlayerData.LoadData(ApiService.Instance.UserId());
     }
 
     public void ResetCurrentLevelScore()
     {
         _currentLevelScore = 0;
-        OnScoreChanged?.Invoke(_playerData.TotalScore);
+       OnScoreChanged?.Invoke(_totalScore);
         OnLevelScoreChanged?.Invoke(_currentLevelScore);
     }
 
     public void CompleteLevel(int levelIndex)
     {
         _playerData.CurrentLevel = levelIndex;
-        _playerData.UnlockNextLevel();
+        _playerData.UnlockNextLevel(ApiService.Instance.UserId());
     }
 
     public int GetLevelScore => _currentLevelScore;

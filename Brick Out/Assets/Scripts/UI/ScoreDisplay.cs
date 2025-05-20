@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,20 +14,15 @@ public class ScoreDisplay : MonoBehaviour
     private int _levelScore;
     private int _targetScore;
 
-    private void Start()
+    private void Awake()
     {
-        // Подписываемся на событие изменения очков
         ScoreManager.Instance.OnScoreChanged += UpdateScore;
         ScoreManager.Instance.OnLevelScoreChanged += UpdateLevelScore;
-        _displayedScore = ScoreManager.Instance.CurrentScore;
-        _levelScore = GameManager.Instance.GetLevelScore;
-        _targetScore = _displayedScore;
-        UpdateText();
+        StartCoroutine(SetScores());
     }
 
     private void OnDisable()
     {
-        // Отписываемся при выключении
         if (ScoreManager.Instance != null)
         {
             ScoreManager.Instance.OnScoreChanged -= UpdateScore;
@@ -36,7 +32,6 @@ public class ScoreDisplay : MonoBehaviour
 
     private void Update()
     {
-        // Плавное изменение числа
         if (_displayedScore != _targetScore)
         {
             _displayedScore = (int)Mathf.Lerp(_displayedScore, _targetScore,_scoreChangeSpeed * Time.deltaTime);
@@ -66,16 +61,14 @@ public class ScoreDisplay : MonoBehaviour
         _scoreLevelText.text = _prefixLevel + _levelScore.ToString("N0");
     }
 
-    // Для анимации при получении очков
-    public void PlayScoreAnimation()
+    private IEnumerator SetScores()
     {
-        // Можно добавить DOTween анимацию или другие эффекты
-        _scoreText.transform.localScale = Vector3.one * 1.2f;
-        Invoke(nameof(ResetAnimation), 0.3f);
+        yield return new WaitForSeconds(0.1f);
+        _displayedScore = ScoreManager.Instance.TotalScore;
+        Debug.Log($"Dis score:{_displayedScore}");
+        _levelScore = GameManager.Instance.GetLevelScore;
+        _targetScore = _displayedScore;
+        UpdateText();
     }
 
-    private void ResetAnimation()
-    {
-        _scoreText.transform.localScale = Vector3.one;
-    }
 }

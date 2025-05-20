@@ -14,7 +14,7 @@ public class MusicToggle : MonoBehaviour
 
     private void Start()
     {
-        _musicSource = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioSource>();
+        _musicSource = GameObject.FindGameObjectWithTag("AudioBg").GetComponent<AudioSource>();
         // Загружаем сохраненные настройки звука
         _isMusicOn = PlayerPrefs.GetInt("MusicEnabled", 1) == 1;
         UpdateMusicState();

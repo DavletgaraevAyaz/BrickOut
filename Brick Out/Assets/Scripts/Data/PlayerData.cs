@@ -4,50 +4,36 @@ using UnityEngine;
 [Serializable]
 public class PlayerData
 {
-    public int TotalScore;
     public int CurrentLevel;
     public int HighestUnlockedLevel;
 
-
-    // Конструктор с значениями по умолчанию
     public PlayerData()
     {
-        TotalScore = 0;
         CurrentLevel = 1;
     }
 
-    // Метод для сохранения данных
-    public void SaveData()
+    public void SaveData(string userId)
     {
-        string json = JsonUtility.ToJson(this);
-        PlayerPrefs.SetString("PlayerData", json);
+        PlayerPrefs.SetInt($"CurrentLevel_{userId}", CurrentLevel);
         PlayerPrefs.Save();
     }
 
-    // Метод для загрузки данных
-    public static PlayerData LoadData()
+    public static PlayerData LoadData(string userId)
     {
-        if (PlayerPrefs.HasKey("PlayerData"))
+        var data = new PlayerData();
+
+        if (PlayerPrefs.HasKey($"CurrentLevel_{userId}"))
         {
-            string json = PlayerPrefs.GetString("PlayerData");
-            return JsonUtility.FromJson<PlayerData>(json);
+            data.CurrentLevel = PlayerPrefs.GetInt($"CurrentLevel_{userId}");
+            data.HighestUnlockedLevel = PlayerPrefs.GetInt($"HighestUnlockedLevel_{userId}");
         }
-        return new PlayerData(); // Возвращаем новые данные, если сохранений нет
+
+        return data;
     }
 
-    // Метод для добавления очков
-    public void AddScore(int amount)
-    {
-        TotalScore += amount;
-        SaveData(); // Автосохранение при изменении
-    }
-
-
-
-    // Метод для разблокировки нового уровня
-    public void UnlockNextLevel()
+    public void UnlockNextLevel(string userId)
     {
         CurrentLevel++;
-        SaveData();
+        SaveData(userId);
     }
 }

@@ -32,9 +32,9 @@ public class BallSpawner : MonoBehaviour
 
     public void SpawnBalls()
     {
-        if (PlayerPrefs.HasKey("Balls"))
+        if (PlayerPrefs.HasKey($"Balls_{ApiService.Instance.UserId()}"))
         {
-            _ballCount = PlayerPrefs.GetInt("Balls");
+            _ballCount = PlayerPrefs.GetInt($"Balls_{ApiService.Instance.UserId()}");
         }
         for (int i = 0; i < _ballCount; i++)
         {
@@ -51,7 +51,7 @@ public class BallSpawner : MonoBehaviour
         UpdateBallCount();
         _ballCount++;
 
-        PlayerPrefs.SetInt("Balls", _ballCount);
+        PlayerPrefs.SetInt($"Balls_{ApiService.Instance.UserId()}", _ballCount);
     }
 
     public void AddBalls()
@@ -64,7 +64,7 @@ public class BallSpawner : MonoBehaviour
             _ballCount++;
         }
 
-        PlayerPrefs.SetInt("Balls", _ballCount);
+        PlayerPrefs.SetInt($"Balls_{ApiService.Instance.UserId()}", _ballCount);
     }
 
     public void ReturnToPool(Ball ball)

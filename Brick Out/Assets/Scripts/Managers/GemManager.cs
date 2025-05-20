@@ -38,6 +38,6 @@ public class GemManager : MonoBehaviour
         return false;
     }
 
-    private void LoadGems() => _gemData = JsonUtility.FromJson<GemData>(PlayerPrefs.GetString("GemData")) ?? new GemData();
-    private void SaveGems() => PlayerPrefs.SetString("GemData", JsonUtility.ToJson(_gemData));
+    private void LoadGems() => _gemData = JsonUtility.FromJson<GemData>(PlayerPrefs.GetString($"GemData_{ApiService.Instance.UserId()}")) ?? new GemData();
+    private void SaveGems() => PlayerPrefs.SetString($"GemData_{ApiService.Instance.UserId()}", JsonUtility.ToJson(_gemData));
 }
